@@ -58,7 +58,7 @@ class Notifier:
         See https://documentation.mailgun.com/api-sending.html#sending for more details on the Mailgun API
         Mailgun's sandbox domain is limited to 300/day (and free is 10000/month)
         """
-        if self.message_to_send='':
+        if self.message_to_send=='':
             print('No message to send. Run get_status()')
             return
 

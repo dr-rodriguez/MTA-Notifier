@@ -54,9 +54,12 @@ class Notifier:
             return self.message_to_send
 
     def send_email_message(self):
-        """Send email message"""
+        """Send an email message
+        See https://documentation.mailgun.com/api-sending.html#sending for more details on the Mailgun API
+        Mailgun's sandbox domain is limited to 300/day (and free is 10000/month)
+        """
         if self.message_to_send='':
-            print('No message to send')
+            print('No message to send. Run get_status()')
             return
 
         url = "https://api.mailgun.net/v3/" + self.mailgun_url + "/messages"
@@ -68,4 +71,4 @@ class Notifier:
             data={"from": from_text,
                   "to": self.my_email,
                   "subject": "MTA Notifier",
-                  "text": self.message_to_send})
+                  "text": self.message_to_send}) # can also be html for HTML text

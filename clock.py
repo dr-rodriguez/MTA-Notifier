@@ -3,13 +3,24 @@ import notifier
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('cron', day_of_week='mon-fri', hour=17)
+# Eastern is 4 hours ahead of UTC, which is what Heroku runs in
+
+# Afternoon check
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=20, minutes=30)
 def scheduled_job():
     m = notifier.Notifier()
+    m.verbose = False  # Ensure verbosity is set to False
     m.get_status(['123', 'ACE'])
-    send_email = True
 
-    if send_email:
-        m.send_email_message()
+    m.send_email_message()
+
+# Morning check
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=12, minutes=55)
+def scheduled_job():
+    m = notifier.Notifier()
+    m.verbose = False
+    m.get_status(['123', 'ACE'])
+
+    m.send_email_message()
 
 sched.start()

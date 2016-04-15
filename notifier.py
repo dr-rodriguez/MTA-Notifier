@@ -20,16 +20,21 @@ class Notifier:
             self.mailgun_key = os.environ.get('MAILGUN_KEY')
             self.my_email = os.environ.get('MY_EMAIL')
 
-        self.message_to_send = ''
+        self.message_to_send = ''  # Message for text
+        self.html_to_send = ''  # Message for Email
+        self.send_message = False
 
     def __call__(self):
         self.get_status()
 
-    def get_status(self, line_to_consider=['123','ACE'], status_to_consider=['DELAYS','PLANNED WORK']):
-        """Get MTA Subway status and return delay messages for lines 123, ACE"""
+    def get_status(self, line_to_consider=['123','ACE'],
+                   status_to_consider=['DELAYS', 'PLANNED WORK', 'SERVICE CHANGE']):
+        """Get MTA Subway status and return delay messages for lines 123, ACE
+        Possible line statuses are: GOOD SERVICE, DELAYS, PLANNED WORK, SERVICE CHANGE
+        """
 
         self.message_to_send = ''
-        send_message = False
+        self.html_to_send = ''
 
         mta_status_url = 'http://web.mta.info/status/serviceStatus.txt'
         r = requests.get(mta_status_url)
@@ -45,30 +50,30 @@ class Notifier:
             print name, line_status, line_time
 
             if (name in line_to_consider) and line_status in status_to_consider:
-                send_message = True
+                self.send_message = True
                 soup = BeautifulSoup(line_message, 'html.parser')
                 soup_parsed = ' '.join([y.strip() for y in soup.strings])
                 self.message_to_send = self.message_to_send + 'Line: ' + name + '\n' + soup_parsed + '\n'
+                self.html_to_send = self.html_to_send + '<h2>Line: ' + name + '</h2><br>' + line_message + '<br>'
 
-        if send_message:
-            return self.message_to_send
+        return self.message_to_send
 
     def send_email_message(self):
         """Send an email message
         See https://documentation.mailgun.com/api-sending.html#sending for more details on the Mailgun API
         Mailgun's sandbox domain is limited to 300/day (and free is 10000/month)
         """
-        if self.message_to_send=='':
-            print('No message to send. Run get_status()')
+        if not self.send_message:
+            print('No message to send.')
             return
 
         url = "https://api.mailgun.net/v3/" + self.mailgun_url + "/messages"
         from_text = "Mailgun Sandbox <postmaster@" + self.mailgun_url + ">"
-        print url, from_text, self.my_email, self.mailgun_key
-        return requests.post(
+        r = requests.post(
             url,
             auth=("api", self.mailgun_key),
             data={"from": from_text,
                   "to": self.my_email,
                   "subject": "MTA Notifier",
-                  "text": self.message_to_send}) # can also be html for HTML text
+                  "html": self.html_to_send}) # can also be html for HTML text
+        return r.content

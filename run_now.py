@@ -3,6 +3,11 @@ import notifier
 m = notifier.Notifier()
 
 # Default lines are 123 and ACE
-# Default notifications are for DELAYS and PLANNED WORK
+# Default notifications are for DELAYS, PLANNED WORK, SERVICE CHANGE
 m.get_status(['123', 'ACE'])
-#m.send_email_message() # Uncomment to send email
+
+send_email = True
+send_text = False
+
+if send_email:
+    m.send_email_message()

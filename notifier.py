@@ -48,7 +48,7 @@ class Notifier:
             line_status = list(line.iterfind('status'))[0].text
             line_message = list(line.iterfind('text'))[0].text
             line_time = list(line.iterfind('Time'))[0].text
-            if self.verbose: print name, line_status, line_time
+            if self.verbose: print('%s: %s %s' % (name, line_status, line_time))
 
             if (name in line_to_consider) and line_status in status_to_consider:
                 self.send_message = True

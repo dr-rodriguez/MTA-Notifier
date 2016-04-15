@@ -2,7 +2,7 @@
 import notifier
 m = notifier.Notifier()
 
-# Change verbosity if desired (True will print out a summary of the statuses or all the lines)
+# Change verbosity if desired (True will print out a summary of the statuses of all the lines)
 m.verbose = False
 
 # Default lines are 123 and ACE

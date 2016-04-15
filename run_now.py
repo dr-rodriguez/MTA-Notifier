@@ -3,7 +3,7 @@ import notifier
 m = notifier.Notifier()
 
 # Change verbosity if desired (True will print out a summary of the statuses of all the lines)
-m.verbose = False
+m.verbose = True
 
 # Default lines are 123 and ACE
 # Default notifications are for DELAYS, PLANNED WORK, SERVICE CHANGE

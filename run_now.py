@@ -3,10 +3,10 @@ import notifier
 m = notifier.Notifier()
 
 # Change verbosity if desired (True will print out a summary of the statuses of all the lines)
-m.verbose = True
+m.verbose = False
 
 # Default lines are 123 and ACE
-# Default notifications are for DELAYS, PLANNED WORK, SERVICE CHANGE
+# Default notifications are for everything but GOOD SERVICE
 m.get_status(['123', 'ACE'])
 
 send_email = True

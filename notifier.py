@@ -29,7 +29,7 @@ class Notifier:
         self.get_status()
 
     def get_status(self, line_to_consider=['123','ACE'],
-                   status_to_consider=['DELAYS', 'PLANNED WORK', 'SERVICE CHANGE']):
+                   status_to_ignore=['GOOD SERVICE']):
         """Get MTA Subway status and return delay messages for lines 123, ACE
         Possible line statuses are: GOOD SERVICE, DELAYS, PLANNED WORK, SERVICE CHANGE
         """
@@ -50,7 +50,7 @@ class Notifier:
             line_time = list(line.iterfind('Time'))[0].text
             if self.verbose: print('%s: %s %s' % (name, line_status, line_time))
 
-            if (name in line_to_consider) and line_status in status_to_consider:
+            if (name in line_to_consider) and line_status not in status_to_ignore:
                 self.send_message = True
                 soup = BeautifulSoup(line_message, 'html.parser')
                 soup_parsed = ' '.join([y.strip() for y in soup.strings])
@@ -59,7 +59,7 @@ class Notifier:
 
         return self.message_to_send
 
-    def send_email_message(self):
+    def send_email_message(self, subject='MTA Notifier'):
         """Send an email message
         See https://documentation.mailgun.com/api-sending.html#sending for more details on the Mailgun API
         Mailgun's sandbox domain is limited to 300/day (and free is 10000/month)
@@ -75,6 +75,6 @@ class Notifier:
             auth=("api", self.mailgun_key),
             data={"from": from_text,
                   "to": self.my_email,
-                  "subject": "MTA Notifier",
+                  "subject": subject,
                   "html": self.html_to_send}) # can also be html for HTML text
         return r.content

@@ -1,8 +1,8 @@
 # MTA Notifier
 
 A simple set of Python scripts to inform me of the status of the [NYC Subway](http://www.mta.info/).   
-The default configuration is to check the status of the 123 and ACE lines and email me if there are: 
-DELAYS, PLANNED WORK, or SERVICE CHANGES.
+The default configuration is to check the status of the 123 and ACE lines and email me 
+if the status is not GOOD SERVICE.
 
 This uses a [Mailgun](https://mailgun.com) sandbox server to send emails. 
 
@@ -15,4 +15,4 @@ See **notifier.py** for which things you need to specify.
 and set to the frequency you want
 
 The file **clock.py** is used to set up scheduling in [Heroku](http://www.heroku.com), 
-allowing this to be run like a cron job but on a cloud server.
+allowing this to be run like a cron job but on a cloud server. This is still being tested.

@@ -13,4 +13,5 @@ send_email = True
 send_text = False
 
 if send_email:
-    m.send_email_message()
+    m.send_email_yagmail()  # Can also use m.send_email_message() to use the Mailgun API
+

@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 import os
 import simplejson
+import yagmail
 
 class Notifier:
     """MTA Notifier Class"""
@@ -15,10 +16,12 @@ class Notifier:
             self.mailgun_url = secrets['MAILGUN_URL']
             self.mailgun_key = secrets['MAILGUN_KEY']
             self.my_email = secrets['MY_EMAIL']
+            self.my_email_pass = secrets['MY_EMAIL_PASS']  # For yagmail
         else:
             self.mailgun_url = os.environ.get('MAILGUN_URL')
             self.mailgun_key = os.environ.get('MAILGUN_KEY')
             self.my_email = os.environ.get('MY_EMAIL')
+            self.my_email_pass = os.environ.get('MY_EMAIL_PASS')
 
         self.message_to_send = ''  # Message for text
         self.html_to_send = ''  # Message for Email
@@ -78,3 +81,15 @@ class Notifier:
                   "subject": subject,
                   "html": self.html_to_send}) # can also be html for HTML text
         return r.content
+
+    def send_email_yagmail(self, subject='MTA Notifier'):
+        """Send an email message
+        This method uses yagmail, which interfaces with STMP directly, rather than the Mailgun API"""
+        if not self.send_message:
+            print('No message to send.')
+            return
+
+        with yagmail.SMTP(self.my_email, self.my_email_pass) as yag:
+            yag.send(to=self.my_email, subject=subject, contents=self.html_to_send.encode('utf-8'))
+
+        return

@@ -14,6 +14,15 @@ def scheduled_job_morning():
 
     m.send_email_message()
 
+# Afternoon check
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=20, minute=30)
+def scheduled_job_morning():
+    m = notifier.Notifier()
+    m.verbose = False
+    m.get_status(['123', 'ACE'])
+
+    m.send_email_message()
+
 # Weekend planner
 @sched.scheduled_job('cron', day_of_week='sat', hour=13, minute=30)
 def scheduled_job_weekend():
